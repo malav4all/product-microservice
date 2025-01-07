@@ -9,7 +9,7 @@ async function bootstrap() {
 
   // Start the Nest app
   await app.listen(PORT);
-  console.log(`User microservice is running on http://localhost:${PORT}`);
+  console.log(`Product microservice is running on http://localhost:${PORT}`);
 
   // Initialize the Eureka client
   const client = new Eureka({
