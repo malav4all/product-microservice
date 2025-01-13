@@ -6,7 +6,7 @@ import { Product } from './product.schema';
 @Injectable()
 export class ProductsService {
   constructor(
-    @InjectModel(Product.name) private productModel: Model<Product>,
+    @InjectModel(Product.name) private productModel: Model<Product>
   ) {}
 
   async create(productData: Partial<Product>): Promise<Product> {
@@ -14,8 +14,23 @@ export class ProductsService {
     return product.save();
   }
 
-  async findAll(): Promise<Product[]> {
-    return this.productModel.find().exec();
+  async findAll(
+    page: number = 1,
+    limit: number = 10
+  ): Promise<{ data: any; total: number; page: number; limit: number }> {
+    try {
+      const skip = (page - 1) * limit; // Calculate documents to skip
+      const total = await this.productModel.countDocuments().exec(); // Get total number of documents
+      const data = await this.productModel
+        .find()
+        .skip(skip)
+        .limit(limit)
+        .exec(); // Fetch paginated data
+
+      return { data, total, page, limit };
+    } catch (error) {
+      throw new Error('Database query failed'); // Throw a specific error for the controller to catch
+    }
   }
 
   async findOne(id: string): Promise<Product> {
