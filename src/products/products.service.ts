@@ -10,8 +10,12 @@ export class ProductsService {
   ) {}
 
   async create(productData: Partial<Product>): Promise<Product> {
-    const product = new this.productModel(productData);
-    return product.save();
+    try {
+      const product = new this.productModel(productData);
+      return await product.save();
+    } catch (error) {
+      throw new Error('Error saving product: ' + error.message);
+    }
   }
 
   async findAll(

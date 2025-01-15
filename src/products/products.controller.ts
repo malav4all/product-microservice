@@ -16,8 +16,15 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
-  async create(@Body() productData: Partial<Product>): Promise<Product> {
-    return this.productsService.create(productData);
+  async create(
+    @Body() productData: Partial<Product>
+  ): Promise<{ message: string } | { error: string }> {
+    try {
+      await this.productsService.create(productData);
+      return { message: 'Product added successfully' };
+    } catch (error) {
+      return { error: 'Failed to add product. Please try again.' };
+    }
   }
 
   @Get()
